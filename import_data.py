@@ -21,6 +21,7 @@ def calculate_distance(nodes, nodes_crds):
     start_node = nodes[0]
     end_node = nodes[1]
     distance = sqrt((nodes_crds[start_node]['x']-nodes_crds[end_node]['x'])**2+(nodes_crds[start_node]['y']-nodes_crds[end_node]['y'])**2)
+    distance = round(distance, 2)
     return distance
 
 def fetch_structure_data(data_path):
@@ -146,7 +147,7 @@ def create_distances_df(nodes, nodes_crds):
     save_df(nodes_dist_df, distances_df_pkl)
 
 
-(nodes, nodes_crds, _) = fetch_structure_data(data_path)
+# (nodes, nodes_crds, _) = fetch_structure_data(data_path)
 # create_distances_df(nodes, nodes_crds)
 # create_demands_df(data_path)
 # create_capacity_df(data_path)

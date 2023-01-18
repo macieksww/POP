@@ -106,25 +106,51 @@ def add_demand_edges(net, demand_df):
     net.show('demand_net.html')
     return net
 
-distances_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/distances_df.pkl"
-demands_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/demands_df.pkl"
-capacities_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/capacities_df.pkl"
-costs_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/costs_df.pkl"
+def add_found_path(path):
+    distances_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/distances_df.pkl"
+    demands_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/demands_df.pkl"
+    capacities_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/capacities_df.pkl"
+    costs_df_pkl = "/Users/maciekswiech/Desktop/PW/Sem7/POP/projekt/dane/costs_df.pkl"
 
-distances_df = load_df(distances_df_pkl)
-demands_df = load_df(demands_df_pkl)
-capacities_df = load_df(capacities_df_pkl)
-costs_df = load_df(costs_df_pkl)
+    distances_df = load_df(distances_df_pkl)
+    demands_df = load_df(demands_df_pkl)
+    capacities_df = load_df(capacities_df_pkl)
+    costs_df = load_df(costs_df_pkl)
 
-nodes_names = list(distances_df.columns)
-nodes_ids = list(range(len(nodes_names)))
-net = Network()
-for i in range(len(nodes_ids)):
-    net.add_node(nodes_ids[i], label=nodes_names[i])
-net.show('nodes.html')
+    nodes_names = list(distances_df.columns)
+    nodes_ids = list(range(len(nodes_names)))
+    net = Network()
+    
+    # creating graph of nodes
+    for i in range(len(nodes_ids)):
+        net.add_node(nodes_ids[i], label=nodes_names[i])
+    
+    # adding edges
+    prev_node = ""
+    for node in path:
+        if prev_node != "":
+            prev_node_row_id = distances_df.index[distances_df['Cities'] == prev_node].tolist()[0]
+            curr_node_row_id = distances_df.index[distances_df['Cities'] == node].tolist()[0]
+            edge_length = distances_df.iloc[prev_node_row_id][node]
+            net.add_edge(prev_node_row_id, curr_node_row_id, value=edge_length)
+        prev_node = node
+    net.show('shortest_path.html')
+
+    
+path = ['Freiburg', 'Aachen', 'Augsburg', 'Bayreuth', 'Berlin', 'Bielefeld',
+        'Braunschweig', 'Bremen', 'Bremerhaven', 'Chemnitz', 'Darmstadt',
+        'Dortmund', 'Dresden', 'Duesseldorf', 'Erfurt', 'Essen', 'Flensburg',
+        'Frankfurt', 'Fulda', 'Giessen', 'Greifswald', 'Hamburg', 'Hannover',
+        'Kaiserslautern', 'Karlsruhe', 'Kassel', 'Kempten', 'Kiel', 'Koblenz',
+        'Koeln', 'Konstanz', 'Leipzig', 'Magdeburg',
+        'Mannheim', 'Muenchen', 'Muenster', 'Norden', 'Nuernberg', 'Oldenburg']
+add_found_path(path)
+    
+
+# net.show('nodes.html')
 # add_distance_edges(net, distances_df)
 # add_cost_edges(net, costs_df)
 # add_capacity_edges(net, capacities_df)
-add_demand_edges(net, demands_df)
+# add_demand_edges(net, demands_df)
 
 # print(demands_df.head(20))
